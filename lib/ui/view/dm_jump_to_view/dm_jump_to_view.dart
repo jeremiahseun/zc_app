@@ -1,184 +1,162 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import '../../../general_widgets/custom_channel.dart';
-import '../../../general_widgets/custom_channel_stage.dart';
-import '../../../general_widgets/custom_user.dart';
-import '../../../general_widgets/custom_user_channel.dart';
-import 'dm_jump_to_viewmodel.dart';
-import 'package:stacked/stacked.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:zurichat/constants/app_strings.dart';
+import 'package:zurichat/general_widgets/custom_channel.dart';
 
-class DmJumpToView extends StatelessWidget {
-  const DmJumpToView({Key? key}) : super(key: key);
+import 'package:zurichat/ui/shared/text_styles.dart';
+import 'package:zurichat/utilities/internalization/localization/app_localization.dart';
+import 'package:stacked/stacked_annotations.dart';
+import 'package:stacked/stacked.dart';
+import 'dm_jump_to_view.form.dart';
+import 'dm_jump_to_viewmodel.dart';
+
+@FormView(fields: [FormTextField(name: 'search')])
+class DmJumpToView extends StatelessWidget with $DmJumpToView {
+  DmJumpToView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalization.of(context);
+    final bool _dark = Theme.of(context).brightness == Brightness.dark;
     return ViewModelBuilder<DmJumpToViewModel>.reactive(
+      fireOnModelReadyOnce: true,
+      onModelReady: (model) {
+        // listenToFormUpdated(model);
+        model.fetchUsers();
+        model.fetchChannels();
+      },
+      disposeViewModel: false,
       viewModelBuilder: () => DmJumpToViewModel(),
       builder: (BuildContext context, DmJumpToViewModel model, Widget? child) =>
-          Scaffold(
-        backgroundColor: Colors.white,
-        resizeToAvoidBottomInset: false,
-        body: GestureDetector(
-          onTap: () {
-            FocusScope.of(context).requestFocus(FocusNode());
-          },
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 60, 0, 0),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 0, 16, 12),
-                  child: Container(
-                    height: 40,
-                    width: 379,
-                    // child: BorderTextField(onChanged: (value)
-                    //{  }, hint: 'Jump to...', controller: controller,),
-                    child: TextField(
-                      controller: model.controller,
-                      keyboardType: TextInputType.text,
-                      autofocus: true,
-                      maxLines: 1,
-                      onChanged: (value) {},
-                      decoration: InputDecoration(
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(5)),
-                          borderSide: BorderSide(
-                              color: Color(0xFF7B8794),
-                              width: 1.5,
-                              style: BorderStyle.solid),
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(5)),
-                          borderSide: BorderSide(
-                              color: Color(0xFF7B8794),
-                              width: 0.5,
-                              style: BorderStyle.solid),
-                        ),
-                        prefixIcon: IconButton(
-                          onPressed: () => model.navigateBack(),
-                          icon: Icon(Icons.arrow_back_ios_outlined),
-                        ),
-                        hintText: 'Jump to...',
-                        hintStyle: TextStyle(
-                          color: Color(0xffA1A9B3),
-                          fontSize: 14,
-                          height: 3.2,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
+          ScreenUtilInit(
+        designSize: const Size(411, 823),
+        builder: () => Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: SafeArea(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(25.w, 20.h, 0, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // SizedBox(
+                  //   height: 60.h,
+                  //   width: 361.w,
+                  //   child: TextField(
+                  //     textAlignVertical: TextAlignVertical.center,
+                  //     controller: searchController,
+                  //     keyboardType: TextInputType.text,
+                  //     maxLines: 1,
+                  //     cursorColor: AppColors.zuriPrimaryColor,
+                  //     onChanged: model.onChanged,
+                  //     decoration: InputDecoration(
+                  //       focusedBorder: OutlineInputBorder(
+                  //         borderRadius: BorderRadius.all(Radius.circular(5.r)),
+                  //         borderSide: BorderSide(
+                  //             color: AppColors.darkGreyColor,
+                  //             width: 0.5.w,
+                  //             style: BorderStyle.solid),
+                  //       ),
+                  //       border: OutlineInputBorder(
+                  //         borderRadius: BorderRadius.all(Radius.circular(5.r)),
+                  //         borderSide: BorderSide(
+                  //             color: AppColors.borderColor,
+                  //             width: 0.5.w,
+                  //             style: BorderStyle.solid),
+                  //       ),
+                  //       prefixIcon: IconButton(
+                  //         icon: Icon(
+                  //           Icons.arrow_back_ios_outlined,
+                  //           color: Theme.of(context).textTheme.bodyText1!.color,
+                  //         ),
+                  //         iconSize: 18.sp,
+                  //         onPressed: () => model.navigateBack(),
+                  //       ),
+                  //       hintText: local!.jumpTo,
+                  //       hintStyle: AppTextStyle.lightGreySize14,
+                  //     ),
+                  //   ),
+                  // ),
+                  // Expanded(
+                  //   child: ListView(
+                  //     padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  //     physics: const BouncingScrollPhysics(),
+                  //     children: [
+                  //       SizedBox(
+                  //         height: 24.h,
+                  //       ),
+                  //       SizedBox(
+                  //         height: 88.h,
+                  //         child: ListView.separated(
+                  //           shrinkWrap: true,
+                  //           physics: const BouncingScrollPhysics(),
+                  //           separatorBuilder:
+                  //               (BuildContext context, int index) => SizedBox(
+                  //             width: 16.h,
+                  //           ),
+                  //           itemBuilder: (context, i) {
+                  //             return InkWell(
+                  //               child: CustomUser(
+                  //                 text: model.userSearch[i].username!,
+                  //               ),
+                  //               onTap: () {
+                  //                 model.navigateToUserDm();
+                  //               },
+                  //             );
+                  //           },
+                  //           scrollDirection: Axis.horizontal,
+                  //           itemCount: model.userSearch.length,
+                  //         ),
+                  //       ),
+                  SizedBox(height: 16.h),
+                  SizedBox(
+                    height: 16.h,
+                    width: 37.w,
+                    child: Text(
+                      local!.recent,
+                      style: _dark
+                          ? AppTextStyle.whiteSize12
+                          : AppTextStyle.lightGreySize12,
                     ),
                   ),
-                ),
-                const SizedBox(height: 12),
-                Container(
-                  height: 88,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(children: [
-                      const CustomUser(
-                        image: 'assets/images/Rectangle 1931.png',
-                        text: 'Fierce',
-                      ),
-                      const SizedBox(width: 20.5),
-                      const CustomUser(
-                        image: 'assets/images/Rectangle 1931 (1).png',
-                        text: 'Abd_Salam',
-                      ),
-                      const SizedBox(width: 20.5),
-                      const CustomUser(
-                        image: 'assets/images/Rectangle 1931 (2).png',
-                        text: 'Souljaunt',
-                      ),
-                      const SizedBox(width: 20.5),
-                      const CustomUser(
-                        image: 'assets/images/Rectangle 1931 (3).png',
-                        text: 'Princess',
-                      ),
-                      const SizedBox(width: 20.5),
-                      const CustomUser(
-                        image: 'assets/images/Rectangle 1931 (4).png',
-                        text: 'Nudis',
-                      ),
-                      const SizedBox(width: 20.5),
-                      const CustomUser(
-                        image: 'assets/images/Rectangle 1931 (5).png',
-                        text: 'Unknown',
-                      ),
-                    ]),
-                  ),
-                ),
-                const SizedBox(height: 32),
-                Container(
-                  height: 24,
-                  width: 379,
-                  child: const Text(
-                    'Recent',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
+                  SizedBox(height: 24.h),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(0, 0, 25.w, 0),
+                    child: ListView.separated(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      separatorBuilder: (BuildContext context, int index) =>
+                          SizedBox(height: 24.h),
+                      itemBuilder: (context, i) {
+                        final channel = model.allChannelsSearch[i];
+                        return InkWell(
+                          child: CustomChannel(
+                            public: channel.isPublic,
+                            text: channel.name ?? ChannelName,
+                          ),
+                          onTap: () {
+                            model.navigateToChannel(
+                                name: channel.name,
+                                id: channel.id,
+                                membersCount: channel.membersCount,
+                                isPublic: channel.isPublic);
+                          },
+                        );
+                      },
+                      scrollDirection: Axis.vertical,
+                      itemCount: model.allChannelsSearch.length,
                     ),
                   ),
-                ),
-                const SizedBox(height: 32),
-                Expanded(
-                  flex: 1,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: Column(
-                      children: [
-                        const CustomChannel(text: 'announcement'),
-                        const CustomChannelStage(
-                            leadingIcon: Icons.lock, text: 'stage4'),
-                        const CustomUserChannel(
-                            image: 'assets/images/Rectangle 138a.png',
-                            text: 'OyinkanUA',
-                            trailingIcon: Icons.circle_outlined),
-                        const CustomChannel(text: 'general'),
-                        const CustomChannelStage(
-                          leadingIcon: Icons.lock,
-                          text: 'design_stage10',
-                        ),
-                        const CustomUserChannel(
-                          image: 'assets/images/Rectangle 138a.png',
-                          text: 'Abd_Salam',
-                          trailingIcon: Icons.circle,
-                          iconColor: Color(0xff007952),
-                        ),
-                        const CustomChannel(text: 'announcement'),
-                        const CustomChannelStage(
-                            leadingIcon: Icons.lock, text: 'stage4'),
-                        const CustomUserChannel(
-                          image: 'assets/images/Rectangle 138a.png',
-                          text: 'Blaze',
-                          trailingIcon: Icons.circle,
-                          iconColor: Color(0xff007952),
-                        ),
-                        const CustomChannel(text: 'announcement'),
-                        const CustomChannelStage(
-                            leadingIcon: Icons.lock, text: 'stage4'),
-                        const CustomChannel(text: 'announcement'),
-                        const CustomChannelStage(
-                            leadingIcon: Icons.lock, text: 'stage4'),
-                        const CustomUserChannel(
-                          image: 'assets/images/Rectangle 138a.png',
-                          text: 'Blaze',
-                          trailingIcon: Icons.circle,
-                          iconColor: Color(0xff007952),
-                        ),
-                        const CustomChannel(text: 'announcement'),
-                        const CustomChannelStage(
-                            leadingIcon: Icons.lock, text: 'stage4'),
-                        const CustomChannel(text: 'announcement')
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
+            // ],
           ),
         ),
       ),
+      //   ),
+      // ),
     );
   }
 }

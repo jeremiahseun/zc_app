@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:hng/general_widgets/svg_icon.dart';
-
-import 'package:hng/ui/shared/colors.dart';
-import 'package:hng/ui/shared/shared.dart';
-import 'package:hng/utilities/constants.dart';
-import '../../nav_pages/home_page/home_page.dart';
+import 'package:zurichat/ui/shared/text_styles.dart';
+import 'package:zurichat/ui/nav_pages/plugin_page/plugin_intro_page.dart';
+import 'package:zurichat/utilities/internalization/localization/app_localization.dart';
 import 'package:stacked/stacked.dart';
 
-import '../../nav_pages/dm_page/dm_page.dart';
-import '../../nav_pages/integrate_page/integrate_page_view.dart';
-import '../../nav_pages/you_page/you_page_view.dart';
+import '../../../general_widgets/svg_icon.dart';
+import '../../nav_pages/home_page/home_page.dart';
+import '../../nav_pages/you_page/you_page.dart';
+import '../../shared/colors.dart';
+import '../../shared/shared.dart';
 import 'nav_bar_viewmodel.dart';
 
 ///Home view is the holder for all the views
@@ -37,25 +36,36 @@ class NavBarView extends StatelessWidget {
           body: getViewForIndex(vModel.currentIndex),
           bottomNavigationBar: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
-            backgroundColor: AppColors.whiteColor,
             selectedItemColor: AppColors.zuriPrimaryColor,
             unselectedItemColor: AppColors.navBarItemColor,
             selectedFontSize: 14,
             unselectedFontSize: 14,
-            selectedLabelStyle: AppTextStyles.normalText,
-            unselectedLabelStyle: AppTextStyles.normalText,
+            selectedLabelStyle: AppTextStyle.darkGreySize12,
+            unselectedLabelStyle: AppTextStyle.darkGreySize12,
             currentIndex: vModel.currentIndex,
             onTap: vModel.setIndex,
-            items: getBottomIcons(),
+            items: getBottomIcons(context),
           ),
         );
       },
     );
   }
 
-  List<BottomNavigationBarItem> getBottomIcons() {
-    List<String> name = ['Home', 'Dm', 'You'];
-    List<SvgData> icons = [SvgAssets.home, SvgAssets.dm, SvgAssets.you];
+  List<BottomNavigationBarItem> getBottomIcons(context) {
+    final local = AppLocalization.of(context);
+    //TODO - local!.homeNavBar crashed app [Null check operator used on a null value]
+    List<String> name = [
+      local!.homeNavBar,
+      local.pluginsNavBar,
+      // local.dmNavBar,
+      local.youNavBar
+    ];
+    List<SvgData> icons = [
+      SvgAssets.home,
+      SvgAssets.plugin,
+      // SvgAssets.dm,
+      SvgAssets.you
+    ];
 
     List<BottomNavigationBarItem> bottomNavList = List.generate(3, (i) {
       var item = BottomNavigationBarItem(
@@ -108,15 +118,15 @@ class NavBarView extends StatelessWidget {
   Widget getViewForIndex(int index) {
     switch (index) {
       case 0:
-        return HomePage();
+        return const HomePage();
       case 1:
-        return const DmPage();
+        return const PluginPageIntro();
+      // case 2:
+      //   return const DmPage();
       case 2:
-        return const IntegratePage();
-      case 3:
         return const YouPage();
       default:
-        return Container();
+        return const HomePage();
     }
   }
 }

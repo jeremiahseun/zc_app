@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:hng/general_widgets/easy_container.dart';
-import 'package:hng/ui/shared/colors.dart';
-import 'package:hng/ui/shared/shared.dart';
-import 'package:hng/ui/shared/text_styles.dart';
 import 'package:stacked/stacked.dart';
 
+import '../../../../general_widgets/easy_container.dart';
+import '../../../shared/colors.dart';
+import '../../../shared/shared.dart';
+import '../../../shared/text_styles.dart';
 import '../home_page_viewmodel.dart';
 
 class HomePageTopBar extends ViewModelWidget<HomePageViewModel> {
@@ -18,15 +18,15 @@ class HomePageTopBar extends ViewModelWidget<HomePageViewModel> {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context, vmodel) {
+  Widget build(BuildContext context, viewModel) {
     //Todo:get the standard app bar height
     return EasyContainer(
       color: AppColors.zuriPrimaryColor,
-      height: kToolbarHeight + 30,
-      padding: EdgeInsets.fromLTRB(zSideMargin, 0, zSideMargin, 0),
+      height: kToolbarHeight + 10,
+      padding: const EdgeInsets.fromLTRB(zSideMargin, 0, zSideMargin, 0),
       boxShadow: [
         BoxShadow(
-          offset: Offset(0, 3),
+          offset: const Offset(0, 3),
           blurRadius: 6,
           color: Colors.black.withOpacity(0.1),
         )
@@ -36,10 +36,10 @@ class HomePageTopBar extends ViewModelWidget<HomePageViewModel> {
           children: [
             GestureDetector(
               onTap: () {
-                vmodel.navigateToWorkspace();
+                viewModel.navigateToOrganization();
               },
               child: organizationLogo ??
-                  EasyContainer(
+                  const EasyContainer(
                     height: 35,
                     width: 35,
                     color: AppColors.whiteColor,
@@ -52,10 +52,10 @@ class HomePageTopBar extends ViewModelWidget<HomePageViewModel> {
                     ),
                   ),
             ),
-            SizedBox(width: 12),
+            const SizedBox(width: 16),
             Text(
               organizationName,
-              style: ZuriTextStyle.organisationNameText(),
+              style: AppTextStyle.organizationNameText,
             )
           ],
         ),

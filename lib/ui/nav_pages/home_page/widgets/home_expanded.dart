@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:hng/ui/nav_pages/home_page/widgets/home_list_items.dart';
-import 'package:hng/ui/shared/colors.dart';
-import 'package:hng/ui/shared/text_styles.dart';
-import 'package:hng/utilities/constants.dart';
-import 'package:stacked/stacked.dart';
+import 'package:zurichat/ui/nav_pages/home_page/widgets/home_list_items.dart';
+import 'package:zurichat/ui/shared/colors.dart';
+import 'package:zurichat/ui/shared/text_styles.dart';
+import 'package:zurichat/utilities/constants.dart';
+import 'package:zurichat/utilities/enums.dart';
 
-import '../home_page_viewmodel.dart';
 import '../home_item_model.dart';
 
 ///Expanded List allows list to be expanded and contracted
@@ -41,14 +40,19 @@ class HomeExpandedList extends StatelessWidget {
     List<Widget> expansionList = List.generate(data.length, (i) {
       HomeItemModel item = data[i];
       if (item.type == HomeItemType.channels) {
-        return ChannelTextAndIcon(data: data[i]);
+        return ChannelTextAndIcon(
+          data: data[i],
+          channelId: data[i].id,
+        );
       } else {
         return DMTextAndIcon(data: data[i]);
       }
     });
 
     if (title == 'Channels') {
-      expansionList.add(AddChannelsTextAndIcon());
+      expansionList.add(const AddChannelsTextAndIcon());
+    } else if (title == 'Direct Messages') {
+      expansionList.add(const AddTeammatesTextAndIcon());
     }
 
     return expansionList;
@@ -72,19 +76,27 @@ class HomeExpansionTile extends StatelessWidget {
     //Unread messages do cannot expand so no expanded list tile is returned
     if (canExpand) {
       return Theme(
-        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+        data: Theme.of(context).copyWith(
+          dividerColor: Colors.transparent,
+          colorScheme: ColorScheme.fromSwatch().copyWith(
+            secondary: AppColors.textDark,
+          ),
+        ),
         child: ExpansionTile(
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 title,
-                style: ZuriTextStyle.mediumBold(),
+                style: TextStyle(
+                  color: Theme.of(context).textTheme.caption!.color,
+                ),
               ),
             ],
           ),
           children: children,
           tilePadding: EdgeInsets.zero,
+          collapsedTextColor: AppColors.textLight10,
           initiallyExpanded: true,
           iconColor: AppColors.greyishColor,
         ),
@@ -99,7 +111,7 @@ class HomeExpansionTile extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: Text(
             title,
-            style: ZuriTextStyle.mediumBold(),
+            style: AppTextStyle.darkGreySize16Bold,
           ),
         ),
         Column(
